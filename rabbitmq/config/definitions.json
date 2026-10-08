@@ -1,0 +1,39 @@
+{
+  "users": [{"name": "guest", "password": "guest", "tags": "administrator"}],
+  "vhosts": [{"name": "/"}],
+  "permissions": [{"user": "guest", "vhost": "/", "configure": ".*", "write": ".*", "read": ".*"}],
+  "queues": [
+    {"name": "demo.errors", "vhost": "/", "durable": true},
+    {"name": "demo.info", "vhost": "/", "durable": true},
+    {"name": "demo.email", "vhost": "/", "durable": true},
+    {"name": "demo.sms", "vhost": "/", "durable": true},
+    {"name": "demo.analytics", "vhost": "/", "durable": true},
+    {"name": "demo.orders.eu", "vhost": "/", "durable": true},
+    {"name": "demo.orders.all", "vhost": "/", "durable": true},
+    {"name": "demo.pdf", "vhost": "/", "durable": true},
+    {"name": "demo.dlq", "vhost": "/", "durable": true},
+    {"name": "demo.classic", "vhost": "/", "durable": true, "arguments": {"x-queue-type": "classic"}},
+    {"name": "demo.quorum", "vhost": "/", "durable": true, "arguments": {"x-queue-type": "quorum"}},
+    {"name": "demo.stream", "vhost": "/", "durable": true, "arguments": {"x-queue-type": "stream"}},
+    {"name": "demo.reliable", "vhost": "/", "durable": true, "arguments": {"x-queue-type": "quorum"}},
+    {"name": "demo.work", "vhost": "/", "durable": true, "arguments": {"x-queue-type": "classic", "x-dead-letter-exchange": "demo.dlx", "x-dead-letter-routing-key": "dead"}}
+  ],
+  "exchanges": [
+    {"name": "demo.direct", "vhost": "/", "type": "direct", "durable": true},
+    {"name": "demo.fanout", "vhost": "/", "type": "fanout", "durable": true},
+    {"name": "demo.topic", "vhost": "/", "type": "topic", "durable": true},
+    {"name": "demo.headers", "vhost": "/", "type": "headers", "durable": true},
+    {"name": "demo.dlx", "vhost": "/", "type": "direct", "durable": true}
+  ],
+  "bindings": [
+    {"source": "demo.direct", "vhost": "/", "destination": "demo.errors", "destination_type": "queue", "routing_key": "error"},
+    {"source": "demo.direct", "vhost": "/", "destination": "demo.info", "destination_type": "queue", "routing_key": "info"},
+    {"source": "demo.fanout", "vhost": "/", "destination": "demo.email", "destination_type": "queue", "routing_key": ""},
+    {"source": "demo.fanout", "vhost": "/", "destination": "demo.sms", "destination_type": "queue", "routing_key": ""},
+    {"source": "demo.fanout", "vhost": "/", "destination": "demo.analytics", "destination_type": "queue", "routing_key": ""},
+    {"source": "demo.topic", "vhost": "/", "destination": "demo.orders.eu", "destination_type": "queue", "routing_key": "orders.*.eu"},
+    {"source": "demo.topic", "vhost": "/", "destination": "demo.orders.all", "destination_type": "queue", "routing_key": "orders.#"},
+    {"source": "demo.headers", "vhost": "/", "destination": "demo.pdf", "destination_type": "queue", "routing_key": "", "arguments": {"x-match": "all", "format": "pdf"}},
+    {"source": "demo.dlx", "vhost": "/", "destination": "demo.dlq", "destination_type": "queue", "routing_key": "dead"}
+  ]
+}
